@@ -6,6 +6,7 @@ import { Blog_Table } from '@/components/blogs/blog_list';
 import { Button } from '@/components/ui/button';
 
 const Page = () => {
+
   return (
     <div>
       {/* <hr className="mb-2" /> */}
