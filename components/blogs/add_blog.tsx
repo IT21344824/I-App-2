@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
+import Link from "next/link"
 
 const FormSchema = z.object({
     Item_Name: z.string().min(2, {
@@ -80,9 +81,15 @@ export function Add_blog_InputForm() {
     }
 
 
+    function handleCancel() {
+        form.reset(); // Resets the form fields to default values
+    }
+
+
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6 ">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6  ">
+
 
                 {/* Item_Name */}
                 <FormField
@@ -90,13 +97,13 @@ export function Add_blog_InputForm() {
                     name="Item_Name"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Item Name</FormLabel>
+                            <FormLabel className="font-semibold">ITEM NAME :</FormLabel>
                             <FormControl>
                                 <Input placeholder="Item Name" {...field} />
                             </FormControl>
-                            <FormDescription>
+                            {/* <FormDescription>
                                 This is the name of the item.
-                            </FormDescription>
+                            </FormDescription> */}
                             <FormMessage />
                         </FormItem>
                     )}
@@ -108,13 +115,13 @@ export function Add_blog_InputForm() {
                     name="Quantity"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Quantity</FormLabel>
+                            <FormLabel className="font-semibold">QUANTITY :</FormLabel>
                             <FormControl>
                                 <Input type="number" placeholder="Quantity" {...field} />
                             </FormControl>
-                            <FormDescription>
+                            {/* <FormDescription>
                                 Enter the quantity of the item.
-                            </FormDescription>
+                            </FormDescription> */}
                             <FormMessage />
                         </FormItem>
                     )}
@@ -126,18 +133,28 @@ export function Add_blog_InputForm() {
                     name="Description"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Description</FormLabel>
+                            <FormLabel className="font-semibold">DESCRIPTION :</FormLabel>
                             <FormControl>
                                 <Input placeholder="Description" {...field} />
                             </FormControl>
-                            <FormDescription>
+                            {/* <FormDescription>
                                 This is the description of the item.
-                            </FormDescription>
+                            </FormDescription> */}
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Submit</Button>
+
+                <div className="flex justify-between">
+                    <Button type="submit">Submit</Button>
+
+                    <div className=" flex gap-4">
+                        <Button type="button" onClick={handleCancel} variant="destructive">Clear</Button>
+                        <Link href={`/dashboard/blogs`}>
+                            <Button type="button" variant="outline">Cancel</Button>
+                        </Link>
+                    </div>
+                </div>
             </form>
         </Form>
     )
