@@ -10,16 +10,14 @@ const Page = () => {
   const blogId = decodeURIComponent(encodedBlogId); // Decode the URL-encoded ID
 
   return (
-    <div className=''>
-      <div className='shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] pt-px pb-2 px-5 rounded-lg'>
-        <div className="flex justify-between mt-5 mb-7">
-          <div className="flex-auto border-b-2 border-black">
-            <p className="ml-2 flex items-center text-2xl font-bold">Edit Blog</p>
-          </div>
+    <div>
+      <div className='shadow-md px-5 py-2 rounded-lg'>
+        <div className="flex justify-between mt-5 mb-7 border-b-2 border-black">
+          <p className="ml-2 text-2xl font-bold">Edit Blog</p>
         </div>
 
         <div>
-          <Edit_Blog_InputForm blogId={blogId || ''} /> 
+          <Edit_Blog_InputForm blogId={blogId || ''} />
         </div>
       </div>
     </div>
