@@ -37,7 +37,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { BLOG_API_ROUTES } from "@/components/blogs/blog_config/Blogs_Api_Routes"; // Import the routes
-import { useRouter } from 'next/navigation'; 
+import { useRouter } from 'next/navigation';
 
 export type Blog = {
   id: string;
@@ -122,7 +122,7 @@ export function Blog_Table() {
       enableHiding: false,
       cell: ({ row }) => {
         const blog = row.original;
-        
+
         const handleDelete = async () => {
           if (window.confirm("Are you sure you want to delete this blog?")) {
             try {
@@ -309,6 +309,8 @@ export function Blog_Table() {
           </TableBody>
         </Table>
       </div>
+
+      {/* table footer */}
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
@@ -333,6 +335,7 @@ export function Blog_Table() {
           </Button>
         </div>
       </div>
+
     </div>
   )
 }
