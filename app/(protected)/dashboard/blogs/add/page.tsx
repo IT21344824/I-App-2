@@ -1,4 +1,3 @@
-/* eslint-disable tailwindcss/classnames-order */
 
 import React from 'react';
 import { Add_blog_InputForm } from '@/components/blogs/add_blog';

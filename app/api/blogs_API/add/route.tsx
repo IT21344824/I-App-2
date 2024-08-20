@@ -13,32 +13,32 @@ export const POST = auth(async (req) => {
 
   try {
     const body = await req.json();
-    const { Item_Name, Quantity, Description } = body;
+    const { Name, Views, Description } = body;
 
-    if (!Item_Name || !Quantity) {
+    if (!Name || Views === undefined) {
       return new Response("Missing required fields", { status: 400 });
     }
 
     // Log the incoming request data
     console.log("Request Data:", body);
 
-    const product = await prisma.product.create({
+    const A_Blog = await prisma.blog.create({
       data: {
-        Item_Name,
-        Quantity,
+        Name,
+        Views,
         Description,
         userId: currentUser.id,
       },
     });
 
-    return new Response(JSON.stringify(product), {
+    return new Response(JSON.stringify(A_Blog), {
       status: 201,
       headers: {
         "Content-Type": "application/json",
       },
     });
   } catch (error) {
-    console.error("Error adding product:", error);
+    console.error("Error adding blog:", error);
     return new Response(`Internal server error: ${error.message}`, { status: 500 });
   }
 });

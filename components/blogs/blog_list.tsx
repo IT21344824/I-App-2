@@ -36,15 +36,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { BLOG_API_ROUTES } from "@/components/blogs/blog_config/Blogs_Api_Routes"; // Import the routes
+import { useRouter } from 'next/navigation'; 
 
-export type Product = {
+
+export type Blog = {
   id: string;
-  Item_Name: string;
-  Quantity: number;
+  Name: string;
+  Views: number;
   Description: string;
 };
 
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<Blog>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -82,30 +85,30 @@ export const columns: ColumnDef<Product>[] = [
     enableSorting: false,
   },
   {
-    accessorKey: "Item_Name",
+    accessorKey: "Name",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        ITEM NAME
+        NAME
         <ArrowUpDown className="ml-2 size-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="capitalize">{row.getValue("Item_Name")}</div>,
+    cell: ({ row }) => <div className="capitalize">{row.getValue("Name")}</div>,
   },
   {
-    accessorKey: "Quantity",
+    accessorKey: "Views",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        QUANTITY
+        VIEWS
         <ArrowUpDown className="ml-2 size-4" />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue("Quantity")}</div>,
+    cell: ({ row }) => <div>{row.getValue("Views")}</div>,
   },
   {
     accessorKey: "Description",
@@ -116,7 +119,32 @@ export const columns: ColumnDef<Product>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const product = row.original;
+      const blog = row.original;
+      const router = useRouter(); // Initialize router
+      
+      const handleDelete = async () => {
+        if (window.confirm("Are you sure you want to delete this blog?")) {
+          try {
+            const response = await fetch(`${BLOG_API_ROUTES.DELETE_BLOG}?id=${blog.id}`, {
+              method: 'DELETE',
+            });
+            if (response.ok) {
+              alert("Blog deleted successfully");
+              window.location.reload(); // Reload the page or update state to remove the deleted blog
+            } else {
+              alert("Failed to delete blog");
+            }
+          } catch (error) {
+            console.error("Error deleting blog:", error);
+            alert("An error occurred while deleting the blog");
+          }
+        }
+      };
+
+      const handleView = () => {
+        router.push(`/dashboard/blogs/${blog.id}`); // Navigate to the blog's detail page
+      };
+      
 
       return (
         <DropdownMenu>
@@ -129,13 +157,22 @@ export const columns: ColumnDef<Product>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(product.id)}
+              onClick={() => navigator.clipboard.writeText(blog.id)}
             >
-              Copy product ID
+              Copy blog ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-blue-500">View</DropdownMenuItem>
-            <DropdownMenuItem className="text-red-500 hover:bg-red-300 hover:text-red-600">Delete</DropdownMenuItem>
+            <DropdownMenuItem className="text-blue-500"
+              onClick={handleView}
+            >
+              View</DropdownMenuItem>
+
+            <DropdownMenuItem
+              className="text-red-500 hover:bg-red-300 hover:text-red-600"
+              onClick={handleDelete}
+            >
+              Delete
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -145,19 +182,19 @@ export const columns: ColumnDef<Product>[] = [
 
 export function Blog_Table() {
 
-  //get data from DB - start
-  const [data, setData] = useState<Product[]>([]);
+  //---------------------------------------------------- get data from DB - start
+  const [data, setData] = useState<Blog[]>([]);
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch("/api/blogs_API/get_list");
+      const response = await fetch(BLOG_API_ROUTES.GET_LIST);
       const products = await response.json();
       setData(products);
     }
 
     fetchData();
   }, []);
-  //get data from DB - end
+  //---------------------------------------------------- get data from DB - end
 
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -191,10 +228,10 @@ export function Blog_Table() {
 
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter Name..."
+          value={(table.getColumn("Name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("Name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

@@ -49,10 +49,10 @@ model Session {
   @@map(name: "sessions")
 }
 
-model Product {
+model Blog {
   id          String   @id @default(cuid())
-  Item_Name   String
-  Quantity    Int
+  Name        String
+  Views       Int
   Description String?
 
   userId      String
@@ -61,7 +61,7 @@ model Product {
   createdAt   DateTime @default(now()) @map(name: "created_at")
   updatedAt   DateTime @default(now()) @map(name: "updated_at")
 
-  @@map(name: "products")
+  @@map(name: "blogs")
 }
 
 
@@ -77,7 +77,7 @@ model User {
 
   accounts Account[]
   sessions Session[]
-  products Product[]  // New relation field to store products associated with the user
+  blogs Blog[]  // New relation field to store products associated with the user
 
 
   stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")

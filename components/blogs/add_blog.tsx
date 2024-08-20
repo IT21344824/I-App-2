@@ -1,161 +1,65 @@
 "use client"
 
+import { useRouter } from 'next/navigation'
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-
-import { Button } from "@/components/ui/button"
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import { useForm, SubmitHandler } from "react-hook-form"
 import { toast } from "@/components/ui/use-toast"
-import Link from "next/link"
+import { InputForm } from "./blog_config/Reuse_Form"
+import { BLOG_API_ROUTES } from "@/components/blogs/blog_config/Blogs_Api_Routes"
+import { z } from "zod"
+import { generateSchema } from "./blog_config/generateSchema"
 
-const FormSchema = z.object({
-    Item_Name: z.string().min(2, {
-        message: "Item name must be at least 2 characters.",
-    }),
-    Quantity: z.preprocess((val) => Number(val), z.number().min(1, {
-        message: "Quantity must be at least 1.",
-    })),
-    Description: z.string().min(2, {
-        message: "Description must be at least 2 characters.",
-    }),
-})
+type FormValues = z.infer<ReturnType<typeof generateSchema>>
 
 export function Add_blog_InputForm() {
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
-        defaultValues: {
-            Item_Name: "",
-            Quantity: undefined,
-            Description: "",
-        },
-    })
+    const router = useRouter()
 
-
-    async function onSubmit(data: z.infer<typeof FormSchema>) {
+    const handleCreateSubmit: SubmitHandler<FormValues> = async (data) => {
         try {
-            const response = await fetch('/api/blogs_API/add', {
+
+            const response = await fetch(BLOG_API_ROUTES.ADD, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data),
-            });
+            })
 
             if (!response.ok) {
-                const errorData = await response.text(); // Get the error message from the response
-                throw new Error(`Failed to submit data: ${errorData}`);
+                const errorData = await response.text()
+                throw new Error(`Failed to submit data: ${errorData}`)
             }
-
-            const result = await response.json();
-            alert("Product added successfully");
+            
+            alert("Blog added successfully")
+            const result = await response.json()
             toast({
-                title: "Product added successfully",
-                description: (
-                    <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                        <code className="text-white">{JSON.stringify(result, null, 2)}</code>
-                    </pre>
-                ),
-            });
+                title: "Blog added successfully",
+            })
+            // Redirect to /dashboard/blogs after successful submission
+            router.push('/dashboard/blogs');
 
-            // Optionally reset the form after successful submission
-            form.reset();
         } catch (error) {
-            alert("Error submitting");
-            console.error("Error submitting form:", error);
+            console.error("Error submitting form:", error)
             toast({
                 title: "Failed to submit",
-                description: error.message, // Display the specific error message
+                description: error.message,
                 variant: "destructive",
-            });
+            })
+
+
         }
     }
 
-
-    function handleCancel() {
-        form.reset(); // Resets the form fields to default values
-    }
-
-
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6  ">
-
-
-                {/* Item_Name */}
-                <FormField
-                    control={form.control}
-                    name="Item_Name"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel className="font-semibold">ITEM NAME :</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Item Name" {...field} />
-                            </FormControl>
-                            {/* <FormDescription>
-                                This is the name of the item.
-                            </FormDescription> */}
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                {/* Quantity */}
-                <FormField
-                    control={form.control}
-                    name="Quantity"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel className="font-semibold">QUANTITY :</FormLabel>
-                            <FormControl>
-                                <Input type="number" placeholder="Quantity" {...field} />
-                            </FormControl>
-                            {/* <FormDescription>
-                                Enter the quantity of the item.
-                            </FormDescription> */}
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                {/* Description */}
-                <FormField
-                    control={form.control}
-                    name="Description"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel className="font-semibold">DESCRIPTION :</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Description" {...field} />
-                            </FormControl>
-                            {/* <FormDescription>
-                                This is the description of the item.
-                            </FormDescription> */}
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <div className="flex justify-between">
-                    <Button type="submit">Submit</Button>
-
-                    <div className=" flex gap-4">
-                        <Button type="button" onClick={handleCancel} variant="destructive">Clear</Button>
-                        <Link href={`/dashboard/blogs`}>
-                            <Button type="button" variant="outline">Cancel</Button>
-                        </Link>
-                    </div>
-                </div>
-            </form>
-        </Form>
+        <div>
+            <InputForm
+                initialValues={{
+                    Name: "",
+                    Views: undefined,
+                    Description: "",
+                }}
+                onSubmit={handleCreateSubmit}
+            />
+        </div>
     )
 }
