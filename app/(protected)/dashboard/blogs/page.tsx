@@ -1,3 +1,5 @@
+/* eslint-disable tailwindcss/classnames-order */
+
 import Link from 'next/link';
 import React from 'react';
 import { Blog_Table } from '@/components/blogs/blog_list';
