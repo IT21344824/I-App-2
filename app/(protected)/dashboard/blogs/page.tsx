@@ -15,7 +15,6 @@ const Page = () => {
             </Button>
           </Link>
         </div>
-
         <div>
           <Blog_Table />
         </div>

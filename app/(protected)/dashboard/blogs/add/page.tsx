@@ -8,7 +8,6 @@ const Page = () => {
         <div className="flex justify-between mt-5 mb-7 border-b-2 border-black">
           <p className="ml-2 text-2xl font-bold">Add Product</p>
         </div>
-
         <div>
           <Add_blog_InputForm />
         </div>
